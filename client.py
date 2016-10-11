@@ -5,35 +5,35 @@ from urlparse import urljoin
 from urlparse import urlparse
 from collections import Counter
 
-def find_philosophy(url, visited_url=None, path_length=0, cache=None):
+CACHE = {}
+
+def find_philosophy(url, visited_url=None, path_length=0):
     """(str) -> int
 
     Return path length or -1 if the `url` does not lead to 
     philosophy page."""
     if visited_url == None:
         visited_url = []
-    if cache == None:
-        cache = {}
     r = requests.get(url)
     html_content = r.text
     philosophy_url = 'https://en.wikipedia.org/wiki/Philosophy'
     if r.url == philosophy_url:
         # Number of requests it took to get to philosophy page. 
-        cache[r.url] = 0
+        CACHE[r.url] = 0
         path = path_length
         for v in visited_url:
-            cache[v] = path
+            CACHE[v] = path
             path -= 1
         return path_length
-    elif cache.has_key(r.url): 
-        if cache[r.url] == -1:
-            return cache[r.url]
+    elif CACHE.has_key(r.url): 
+        if CACHE[r.url] == -1:
+            return CACHE[r.url]
         else:
-            return cache[r.url] + path_length
+            return CACHE[r.url] + path_length
     # Check it have we not seen the url yet. Repeted url would indicate
     # we will never get to philosophy page.
     elif r.url in visited_url:
-        cache_update(visited_url, cache)
+        cache_update(visited_url, CACHE)
         return -1
     else:
         link = find_link(html_content)
@@ -41,15 +41,15 @@ def find_philosophy(url, visited_url=None, path_length=0, cache=None):
         if link and link.attrs.has_key('href'):
             new_url = urljoin(r.url, link.attrs['href'])
             if not differrent_path(r.url, new_url):
-                cache_update(visited_url, cache)
+                cache_update(visited_url, CACHE)
                 return -1
             else:
                 path_length += 1
                 visited_url.append(r.url)
                 # Recurse
-                return find_philosophy(new_url, visited_url, path_length, cache)
+                return find_philosophy(new_url, visited_url, path_length)
         else:
-            cache_update(visited_url, cache)
+            cache_update(visited_url, CACHE)
             return -1
 
 def cache_update(visited_url, cache):
@@ -84,9 +84,8 @@ def find_percentage(urls):
     """
     # n is the number of pages that lead to philosophy
     n = 0
-    cache = {}
     for url in urls:
-        if find_philosophy(url, cache=cache) != -1:
+        if find_philosophy(url) != -1:
             n += 1
     percentage = n * 100 / len(urls)
     return percentage
@@ -106,9 +105,8 @@ def distribution(urls):
     Elements of `urls` are the starting url.
     """
     distr = []
-    cache = {}
     for url in urls:
-        r = find_philosophy(url, cache=cache)
+        r = find_philosophy(url)
         if r != -1:
             distr.append(r)
     return distr
