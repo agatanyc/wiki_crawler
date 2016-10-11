@@ -7,6 +7,8 @@ python2
 
 BeautifulSoup `from bs4 import BeautifulSoup`
 
+## Description
+
 Module client_1.py contains solution to first and second part of the assignment.
 
 To run:  `python client_1.py`
@@ -23,7 +25,7 @@ We are working with the assumption that Wikipedia's page contents does not chang
 
 To run: `python client.py`
 
-To run tests go :
+## To run tests go :
 
 `python test_1.py` to test solution to  problem 1 and 2.
 
