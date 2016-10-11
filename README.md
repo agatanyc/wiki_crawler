@@ -25,7 +25,7 @@ To run: `python client.py`
 
 To run tests go :
 
-`python test_1.py`
+`python test_1.py` to test solution to  problem 1 and 2.
 
-`pyton test.py`
+`pyton test.py` to test solution to  problem 3.
 
