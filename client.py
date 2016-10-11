@@ -3,26 +3,27 @@ import bs4
 from bs4 import BeautifulSoup
 from urlparse import urljoin
 from urlparse import urlparse
-from time import sleep
+from collections import Counter
 
-def find_philosophy(url, visited_url=[], path_length=0):
+#def find_philosophy(url):
+#    return find_philosophy0(url, [], 0)
+
+def find_philosophy(url, visited_url=None, path_length=0):
     """(str) -> int
 
     Return path length or -1 if the `url` does not lead to 
     philosophy page."""
+    if not visited_url:
+        visited_url = []
     r = requests.get(url)
-    print 'URL: ', r.url, 'PATH LENGTH: ', path_length
-
     html_content = r.text
     philosophy_url = 'https://en.wikipedia.org/wiki/Philosophy'
     if r.url == philosophy_url:
-        print 'Reached Philosophy'
         # Number of requests it took to get to philosophy page.
         return path_length
-    # Check it have we not seen the link yet. Repeted link would indicate
+    # Check it have we not seen the url yet. Repeted url would indicate
     # we will never get to philosophy page.
     elif r.url in visited_url:
-        print 'this is a loop'
         return -1
     else:
         link = find_link(html_content)
@@ -30,7 +31,6 @@ def find_philosophy(url, visited_url=[], path_length=0):
         if link and link.attrs.has_key('href'):
             new_url = urljoin(r.url, link.attrs['href'])
             if not differrent_path(r.url, new_url):
-                print 'This is a same page', new_url
                 return -1
             else:
                 path_length += 1
@@ -38,7 +38,6 @@ def find_philosophy(url, visited_url=[], path_length=0):
                 # Recurse
                 return find_philosophy(new_url, visited_url, path_length)
         else:
-            print 'This is not a link', link
             return -1
 
 def find_link(html_content):
@@ -70,7 +69,7 @@ def find_percentage(urls):
     # n is the number of pages that lead to philosophy
     n = 0
     for url in urls:
-        if find_philosophy(url, [], 0) != -1:
+        if find_philosophy(url) != -1:
             n += 1
     percentage = n * 100 / len(urls)
     return percentage
@@ -91,7 +90,7 @@ def distribution(urls):
     """
     distr = []
     for url in urls:
-        r = find_philosophy(url, [], 0)
+        r = find_philosophy(url)
         if r != -1:
             distr.append(r)
     return distr
@@ -99,12 +98,12 @@ def distribution(urls):
 def random_distribution(m):
     """(int) -> list
 
-    Distribution of path lengths for `m` pages."""
+    Distribution of path lengths mapped to occurrence for `m` pages."""
     urls = []
     for i in range(m):
         p = 'https://en.wikipedia.org/wiki/Special:Random'
         urls.append(p)
-    return distribution(urls)
+    return Counter(distribution(urls))
 
 def balanced_parenths(string):
     """(str) -> bool
@@ -132,15 +131,19 @@ if __name__ == '__main__':
     url2 = 'http://en.wikipedia.org/wiki/Art'
     #print find_philosophy(url)
     #print ''
-    #print find_philosophy(url2)
-    #urls = ['https://en.wikipedia.org/wiki/David_Marr_(neuroscientist)',
-    #        'https://en.wikipedia.org/wiki/Reinevatn',
-    #        'https://en.wikipedia.org/wiki/Alpine_speedwell']
-    #for url in urls:
-    #    print "Testing url: ", url
-    #    result = find_philosophy(url)
-    #    print "*** Result: ", result
+    #print 'PERCENTAGE', random_percentage(3)
     #print ''
-    print 'PERCENTAGE', find_percentage(3)
+    # print 'DISTRIBUTIION', random_distribution(10)
     print ''
-    print 'DISTRIBUTIION', distribution(3)
+    urlls = ['https://en.wikipedia.org/wiki/Maid_service',
+        'https://en.wikipedia.org/wiki/United_States',
+        'https://en.wikipedia.org/wiki/Arrondissements_of_the_Charente-Maritime_department']
+    print urlls
+    for url in urlls:
+        print url
+        print find_philosophy(url), url
+    print ''
+    print ''
+    print find_philosophy('https://en.wikipedia.org/wiki/Arrondissements_of_the_Charente-Maritime_department')
+    print find_philosophy('https://en.wikipedia.org/wiki/United_States')
+    print find_philosophy('https://en.wikipedia.org/wiki/Maid_service') 
