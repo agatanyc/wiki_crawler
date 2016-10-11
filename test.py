@@ -11,8 +11,7 @@ NO_LINK_URL = 'https://en.wikipedia.org/wiki/Arrondissements_of_the_Charente-Mar
 
 # link that leads to itself (expect -1)
 LOOP_URL = 'https://en.wikipedia.org/wiki/Maid_service'
-# LOOP_URL2 = 'https://en.wikipedia.org/wiki/United_States'
-#philsosphy page
+#philosophy page
 PHILOSOPHY_URL = 'https://en.wikipedia.org/wiki/Philosophy'
 
 class PhilosophyTestCase(unittest.TestCase):
@@ -29,7 +28,7 @@ class PhilosophyTestCase(unittest.TestCase):
 
     def test_loop(self):
         # if we see the same page agin we are will never reach 
-        # `philosophy` page
+        # the `philosophy` page
         r = find_philosophy(LOOP_URL)
         self.assertEqual(r, -1)
 

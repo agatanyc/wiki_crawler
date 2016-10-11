@@ -5,19 +5,18 @@ from urlparse import urljoin
 from urlparse import urlparse
 from collections import Counter
 
-def find_philosophy(url, visited_url=[], path_length=0):
-    """(str) -> int
+def find_philosophy(url, visited_url=None, path_length=0):
+    """(str, list, int ) -> int
 
     Return path length or -1 if the `url` does not lead to 
     philosophy page."""
+    if visited_url == None:
+        visited_url = []
     r = requests.get(url)
     html_content = r.text
     philosophy_url = 'https://en.wikipedia.org/wiki/Philosophy'
     if r.url == philosophy_url:
-        # Number of requests it took to get to philosophy page.
         return path_length
-    # Check it have we not seen the url yet. Repeted url would indicate
-    # we will never get to philosophy page.
     elif r.url in visited_url:
         return -1
     else:
@@ -38,10 +37,10 @@ def find_philosophy(url, visited_url=[], path_length=0):
 def find_link(html_content):
     """(str) -> bs4.element.Tag or None
 
-    Return the first link on the main body of the article that is
+    Return the first link in the main body of the article that is
     not within parenthesis or italicized.
-    Since Wikipedia uses a template we assume the not
-    italicized link will be in one of the `p` tag paragraphs."""
+    Since Wikipedia uses templates we assume the not
+    italicized link will be in one of the `p` tags."""
     soup = BeautifulSoup(html_content, "html.parser")
     paragraphs = soup.find_all('p')
     for p in paragraphs:
@@ -70,6 +69,10 @@ def find_percentage(urls):
     return percentage
 
 def random_percentage(m):
+    """(int) - int
+
+    Return the precentage of pages that lead to `philosophy` for 
+    `m` number of pages."""
     pages = []
     for i in range(m):
         p = 'https://en.wikipedia.org/wiki/Special:Random'
@@ -81,7 +84,7 @@ def distribution(urls):
     """(list) -> list
 
     Distrbution of path lengths to reach `philosophy` page.
-    Elements of `urls` are the starting url.
+    Elements of `urls` are the starting urls.
     """
     distr = []
     for url in urls:
@@ -122,6 +125,6 @@ def differrent_path(old_url, new_url):
     return parsed_old.path != parsed_new.path
 
 if __name__ == '__main__':
-    m = 500
-    random_percentage(m)
-    random_distribution(m)
+    m = 5
+    print random_percentage(m)
+    print random_distribution(m)
