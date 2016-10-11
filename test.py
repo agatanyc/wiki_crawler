@@ -11,7 +11,7 @@ NO_LINK_URL = 'https://en.wikipedia.org/wiki/Arrondissements_of_the_Charente-Mar
 
 # link that leads to itself (expect -1)
 LOOP_URL = 'https://en.wikipedia.org/wiki/Maid_service'
-LOOP_URL2 = 'https://en.wikipedia.org/wiki/United_States'
+# LOOP_URL2 = 'https://en.wikipedia.org/wiki/United_States'
 #philsosphy page
 PHILOSOPHY_URL = 'https://en.wikipedia.org/wiki/Philosophy'
 
@@ -38,7 +38,6 @@ class PhilosophyTestCase(unittest.TestCase):
         r = find_philosophy(PHILOSOPHY_URL)
         self.assertEqual(r, 0)
 
-
 class PercentageTestCase(unittest.TestCase):
     
     def test_all_success(self):
@@ -46,7 +45,7 @@ class PercentageTestCase(unittest.TestCase):
         self.assertEqual(find_percentage(urls), 100)
 
     def test_no_success(self):
-        urls = (LOOP_URL, LOOP_URL2, NO_LINK_URL)
+        urls = (LOOP_URL, LOOP_URL, NO_LINK_URL)
         self.assertEqual(find_percentage(urls), 0)
 
     def test_mixed(self):
