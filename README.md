@@ -1,5 +1,14 @@
 # wiki_philosophy
-
+Take any random article on Wikipedia (example: http://en.wikipedia.org/wiki/Art)
+ and click on the first link on the main body of the article that is not within
+ parenthesis or italicized;
+If you repeat this process for each subsequent article you will often end up on
+the Philosophy page.
+• What percentage of pages often lead to philosophy?
+• Using the random article link (found on any wikipedia article in the left sidebar),
+what is the distribution of
+path lengths for 500 pages, discarding those paths that never reach the Philosophy page?
+• How can you reduce the number of http requests necessary for 500 random starting pages?
 
 ## Dependencies
 
@@ -30,4 +39,5 @@ To run: `python client.py`
 `python test_1.py` to test solution to  problem 1 and 2.
 
 `pyton test.py` to test solution to  problem 3.
+
 
